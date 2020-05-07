@@ -1,3 +1,3 @@
-double f(double x,double y);
-int Euler ( double* Y,double* X,double h, int NP);
-
+int Euler ( double* Y,double h, int N);
+int Analytique(double* Ana, double h, double N);
+int Erreur(double* Y,double* Ana,double h,int N);
