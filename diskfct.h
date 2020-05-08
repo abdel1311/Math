@@ -1,1 +1,1 @@
-int Write(double* X, double* Y,char* nom_fichier,int N);
+int Write(double* X, double* Y,char* nom_fichier,int taille_list);

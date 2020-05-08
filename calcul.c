@@ -3,52 +3,90 @@
 #include <math.h>
 double m = 80;
 double alpha = 30;
-double g = 9.81 ;
-double VO = 0; 
+double g = 9.81;
+double VO = 0;
 
-double f(double x,double y)
+double f(double x, double y)
 {
-    double tau = m/alpha;
-    return g - (1/tau)*y*y;
+    double tau = m / alpha;
+    return g - (1 / tau) * y * y;
 }
-int Euler (double* Y,double h, int N)
+int Euler(double *Y, double h, int N)
 {
     Y[0] = 0;
-    for (int i = 0;i<N;i++)
+    for (int i = 0; i < N; i++)
     {
-        Y[i+1] = (double) Y[i]+ h*f(i*h,Y[i]);
+        Y[i + 1] = (double)Y[i] + h * f(i * h, Y[i]);
     }
     return 1;
 }
 
-
-int Analytique(double* Ana, double h, double N)
+int Analytique(double *Ana, double h, double N)
 {
     double t;
-    double tau = m/alpha;
+    double tau = m / alpha;
     double k = sqrt(tau * g);
 
-    for (int i = 1;i<N;i++)
+    for (int i = 1; i < N+1; i++)
     {
-        t = i*h;
-        Ana[i] = k * (((VO-k)/(VO+k)) * exp((-2*k*t)/tau) +1) / (1-(VO-k)/(VO+k) * exp((-2*k*t)/tau));
+        t = i * h;
+        Ana[i] = k * (((VO-k)/(VO+k)) * exp((-2*k*t)/tau)+1) / (1- (VO-k)/(VO+k) *exp((-2*k*t)/tau) );
     }
     return 1;
 }
 
-
-double Erreur( double* Y,double* Ana,double h,int N)
+int Erreur( double* E, double* N_list, int taille_list, double h, double xmin, double xmax,char* selecteur )
 {
+    double N;
     double Erreur = 0;
     double Erreur_temp = 0;
-    for (int i = 0;i<N+1;i++)
+
+    for (int i = 0; i < taille_list; i++)
     {
-        Erreur_temp = fabs(Y[i]-Ana[i]);
-        if (Erreur_temp>Erreur)
+
+        N = N_list[i];
+        h = (xmax - xmin) / N;
+        double *Y = NULL;
+        Y = malloc((N + 1) * sizeof(double));
+        //if (selecteur == 'Euler')
         {
-            Erreur = Erreur_temp;
+            //Euler(Y, h, N);
+
         }
+        //else if (selecteur == 'RK2')
+        {
+            //RK2()
+        }
+        Euler(Y, h, N);
+
+        double *Ana = NULL;
+        Ana = malloc((N + 1) * sizeof(double));
+        Analytique(Ana, h, N);
+
+
+
+
+        Erreur = 0;
+        Erreur_temp = 0;
+
+        for (int j = 0; j < N + 1; j++)
+        {
+            printf("%f\n" ,Ana[j]);
+
+            Erreur_temp = fabs(Y[j] - Ana[j]);
+            //printf("%f % d\n",Erreur_temp,j);
+
+            if (Erreur_temp > Erreur)
+            {
+                Erreur = Erreur_temp;
+            }
+        }
+        //printf("%f\n",Erreur);
+
+        E[i] = Erreur;
+        //printf("%f\n",E[i]);
+        free(Ana);
     }
-    //printf("%f\n",Erreur);
-    return Erreur;
+    return 1;
 }
+

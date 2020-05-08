@@ -14,5 +14,7 @@
         "makefile": true,
         "*.exe": true
     },
-    "explorerExclude.backup": null
+    "explorerExclude.backup": null,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }
