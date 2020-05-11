@@ -12,7 +12,8 @@
         "*.h": false,
         "README": true,
         "makefile": true,
-        "*.exe": true
+        "*.exe": true,
+        "*.png": true
     },
     "explorerExclude.backup": null,
     "python.linting.pylintEnabled": true,

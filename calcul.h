@@ -1,5 +1,11 @@
 int Euler ( double* Y,double h, int N);
-int Analytique(double* Ana, double h, double N);
-int Erreur( double* E, double* N_list, int taille_list, double h, double xmin, double xmax,char* selecteur );
-int choix();
 int RK2(double* Y,double h,int N);
+int Analytique(double* Ana, double h, double N);
+int Erreur( double* E, double *Y, double N,double h,int i);
+int Erreur_list( double* E, double* N_list, int taille_list, double h, double xmin, double xmax,char* selecteur );
+int choix_condition(double al,double V);
+int trapeze(double *x,double *Ana, double h, double N);
+int point_milieu(double *x,double *Ana, double N);
+int acceleration_RK2(double *X,double *P,double* Y,double h,int N);
+int acceleration_EULER(double *X,double* P2, double* Y, double h, int N);
+int acceleration_ANA(double *X,double* P3, double* Y, double h, int N);

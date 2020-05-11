@@ -8,12 +8,13 @@ double g = 9.81;
 double VO = 0;
 
 
-
 double f(double x, double y)
 {
     double tau = m / alpha;
     return g - (1 / tau) * y * y;
+    
 }
+
 int Euler(double *Y, double h, int N)
 {
     Y[0] = 0;
@@ -53,12 +54,34 @@ int Analytique(double *Ana, double h, double N)
     return 1;
 }
 
-int Erreur( double* E, double* N_list, int taille_list, double h, double xmin, double xmax,char* selecteur )
+int Erreur( double* E, double *Y, double N,double h,int i)
 {
-    double N;
     double Erreur = 0;
     double Erreur_temp = 0;
 
+    double *Ana = NULL;
+    Ana = malloc((N + 1) * sizeof(double));
+    Analytique(Ana, h, N);
+
+    Erreur = 0;
+    Erreur_temp = 0;
+
+    for (int j = 0; j < N + 1; j++)
+    {
+        Erreur_temp = fabs(Y[j] - Ana[j]);
+        if (Erreur_temp > Erreur)
+        {
+            Erreur = Erreur_temp;
+        }
+    }
+    E[i] = Erreur;
+    free(Ana);
+    return 1;
+}
+
+int Erreur_list( double* E, double* N_list, int taille_list, double h, double xmin, double xmax,char* selecteur )
+{
+    double N;
     for (int i = 0; i < taille_list; i++)
     {
 
@@ -78,36 +101,150 @@ int Erreur( double* E, double* N_list, int taille_list, double h, double xmin, d
         {
             printf("Méthode non reconnue\n");
             return 0;
-        }
+        };
+        Erreur( E, Y,  N, h,i);
+    }
+    return 1;
+}
 
-        double *Ana = NULL;
-        Ana = malloc((N + 1) * sizeof(double));
-        Analytique(Ana, h, N);
+int choix_condition(double al,double V)
+{
+    alpha = al;
+    VO = V;
+    return 1;
+}
 
-        Erreur = 0;
-        Erreur_temp = 0;
 
-        for (int j = 0; j < N + 1; j++)
-        {
-            Erreur_temp = fabs(Y[j] - Ana[j]);
-            if (Erreur_temp > Erreur)
-            {
-                Erreur = Erreur_temp;
-            }
-        }
-        E[i] = Erreur;
-        free(Ana);
+
+
+int trapeze(double *x,double *Ana, double h, double N)
+{
+    x[0]=(double)4000;
+
+    for (int i = 1;i<N;i++)
+    {
+        x[i]= x[i-1] - (h*(Ana[i-1]+Ana[i]))/2;
     }
     return 1;
 }
 
 
-int choix ()
+int point_milieu(double *x,double *Ana, double N)
 {
-    printf("veuillez rentrer la valeur de alpha souhaité:");
-    scanf("%lf",&alpha);    
-    printf("veuillez rentrer la valeur de V0 souhaité:");
-    scanf("%lf",&VO);
-    
+    x[0]=(double)4000;
+
+    for (int i = 1;i<N/2;i++)
+    {
+        x[i]= x[i-1] - Ana[2*i -1]/2;
+    }
+    return 1;
+}
+
+
+// Acceleration RK2
+
+int acceleration_RK2(double *X,double* P, double* Y, double h, int N)
+{
+
+    RK2(Y, h, N);
+    double* x0 = NULL;
+    double* fx0 = NULL;
+    double* x1 = NULL;
+    double* fx1 = NULL;
+    // double* P = NULL;
+    // P = malloc((N-1)*sizeof(double));
+    x0 = malloc((N)*sizeof(double));
+    fx0 = malloc((N)*sizeof(double));
+    x1 = malloc((N)*sizeof(double));
+    fx1 = malloc((N)*sizeof(double));
+
+    // Valeurs de x0 et fx0
+    for(int i=0; i<N; i++)
+    {
+        x0[i]=X[i];
+        fx0[i]=Y[i];
+    }
+    // Valeur de x0 et fx0  
+    for(int i=0; i<N+1; i++)
+    {
+        x1[i]=X[i+1];
+        fx1[i]=Y[i+1];
+    }
+
+    for(int i =0; i<N; i++)
+    {
+        P[i] = (fx1[i]-fx0[i])/(x1[i]-x0[i]);
+    }  
+    return 0;
+}
+
+//  Acceleration Euler
+int acceleration_EULER(double *X,double* P2, double* Y, double h, int N)
+{
+    Euler(Y, h, N);
+
+    double* x0 = NULL;
+    double* fx0 = NULL;
+    double* x1 = NULL;
+    double* fx1 = NULL;
+    x0 = malloc((N)*sizeof(double));
+    fx0 = malloc((N)*sizeof(double));
+    x1 = malloc((N)*sizeof(double));
+    fx1 = malloc((N)*sizeof(double));
+
+    // Valeurs de x0 et fx0
+    for(int i=0; i<N; i++)
+    {
+        x0[i]=X[i];
+        fx0[i]=Y[i];
+    }
+    // Valeur de x0 et fx0  
+    for(int i=0; i<N+1; i++)
+    {
+        x1[i]=X[i+1];
+        fx1[i]=Y[i+1];
+    }
+
+    for(int i =0; i<N; i++)
+    {
+        P2[i] = (fx1[i]-fx0[i])/(x1[i]-x0[i]);
+    }  
+    return 0;
+}
+
+
+// Acceleration Analytique
+int acceleration_ANA(double *X,double* P3, double* Y, double h, int N)
+{
+
+    double *Ana = NULL;
+    Ana = malloc((N + 1) * sizeof(double));
+    Analytique(Ana, h, N);
+
+    double* x0 = NULL;
+    double* fx0 = NULL;
+    double* x1 = NULL;
+    double* fx1 = NULL;
+    x0 = malloc((N)*sizeof(double));
+    fx0 = malloc((N)*sizeof(double));
+    x1 = malloc((N)*sizeof(double));
+    fx1 = malloc((N)*sizeof(double));
+
+    // Valeurs de x0 et fx0
+    for(int i=0; i<N; i++)
+    {
+        x0[i]=X[i];
+        fx0[i]=Ana[i];
+    }
+    // Valeur de x0 et fx0  
+    for(int i=0; i<N+1; i++)
+    {
+        x1[i]=X[i+1];
+        fx1[i]=Ana[i+1];
+    }
+    for(int i =0; i<N; i++)
+    {
+        P3[i] = (fx1[i]-fx0[i])/(x1[i]-x0[i]);
+    }  
     return 0;
 }

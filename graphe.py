@@ -45,3 +45,39 @@ plt.draw()
 plt.savefig('Erreur.png')
 plt.show()
 
+#Alpha
+alpha = np.loadtxt('Erreur_alpha.dat',delimiter=';')
+Xe = alpha[:,0]
+Ye = alpha[:,1]
+
+
+plt.figure(figsize=(8,8))
+plt.plot(Xe, Ye, lw=2, marker='v', label='Alpha')
+
+plt.xlabel('alpha')
+plt.ylabel('Erreur')
+plt.grid()
+plt.title("Erreur en fonction de alpha pour la méthode d'Euler")
+plt.legend()
+plt.draw()
+plt.savefig('Erreur_alpha.png')
+plt.show()
+
+#AlphVOa
+Erreur = np.loadtxt('Erreur_V0.dat',delimiter=';')
+Xe = Erreur[:,0]
+Ye = Erreur[:,1]
+
+
+plt.figure(figsize=(8,8))
+plt.plot(Xe, Ye, lw=2, marker='v', label='V0')
+
+plt.xlabel('V0')
+plt.ylabel('Erreur')
+plt.grid()
+plt.title("Erreur en fonction de V0 pour la méthode d'Euler")
+plt.legend()
+plt.draw()
+plt.savefig('Erreur_V0.png')
+plt.show()
+
