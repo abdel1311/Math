@@ -5,7 +5,7 @@
 double m = 80;
 double alpha = 30;
 double g = 9.81;
-double VO = 0;
+double V0;
 
 
 double f(double x, double y)
@@ -17,7 +17,7 @@ double f(double x, double y)
 
 int Euler(double *Y, double h, int N)
 {
-    Y[0] = 0;
+    Y[0] = V0;
     for (int i = 0; i < N; i++)
     {
         Y[i + 1] = (double)Y[i] + h * f(i * h, Y[i]);
@@ -29,7 +29,7 @@ int RK2(double* Y,double h,int N)
 {
     double K1;
     double K2;
-     Y[0] = 0+VO; 
+     Y[0] = 0+V0; 
       for (int i = 0;i<N;i++)
     {
         K1 = h*f(i*h,Y[i]);
@@ -49,7 +49,7 @@ int Analytique(double *Ana, double h, double N)
     for (int i = 1; i < N+1; i++)
     {
         t = i * h;
-        Ana[i] = k * (((VO-k)/(VO+k)) * exp((-2*k*t)/tau)+1) / (1- (VO-k)/(VO+k) *exp((-2*k*t)/tau) );
+        Ana[i] = k * (((V0-k)/(V0+k)) * exp((-2*k*t)/tau)+1) / (1- (V0-k)/(V0+k) *exp((-2*k*t)/tau) );
     }
     return 1;
 }
@@ -110,7 +110,7 @@ int Erreur_list( double* E, double* N_list, int taille_list, double h, double xm
 int choix_condition(double al,double V)
 {
     alpha = al;
-    VO = V;
+    V0 = V;
     return 1;
 }
 
@@ -247,4 +247,27 @@ int acceleration_ANA(double *X,double* P3, double* Y, double h, int N)
         P3[i] = (fx1[i]-fx0[i])/(x1[i]-x0[i]);
     }  
     return 0;
+}
+
+int dAnalytique(double* DAna,double* X,double N)
+{
+    double tau = m / alpha;
+    double k = sqrt(tau * g);
+    for (int i = 1; i < N+1; i++)
+    { 
+        DAna[i]= 1 -  (4*k*X[i]*exp(2*k*X[i]/tau) + tau*exp(4*k*X[i]/tau)-tau)/(tau*pow((exp(2*k*X[i]/tau)+1),2));
+    }
+
+    return 1;
+}
+int iAnalytique(double* IAna,double* X,double N)
+{
+    double tau = m / alpha;
+    double k = sqrt(tau * g);
+    for (int i = 0; i < N; i++)
+    {
+        IAna[i] = 4000 - (k*X[i] - k*X[i]*exp(-2*k*X[i]/tau))/(exp(-2*k*X[i]/tau)+1);
+    }
+
+    return 1;
 }

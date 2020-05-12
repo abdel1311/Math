@@ -1,0 +1,15 @@
+---------------------------Execution---------------------------
+
+Génération des données
+
+1. Déplacer le makefile corespondant au systéme dans le dossier PROJET_C_TOUAMI_BENABDESSELAM
+2. Se placer dans ce dossier et taper make 
+3. taper ./dm.exe
+
+
+Génération des graphes
+
+1. Se placer dans le dossier PROJET_C_TOUAMI_BENABDESSELAM
+2. Installer les modules python avec pip3 install numpy matplolib
+3. Executer le script python avec la commande python3 graphe.python
+

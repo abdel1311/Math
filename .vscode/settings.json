@@ -10,10 +10,11 @@
         ".vscode": true,
         ".gitignore": true,
         "*.h": false,
-        "README": true,
-        "makefile": true,
-        "*.exe": true,
-        "*.png": true
+        "README": false,
+        "makefile": false,
+        "*.exe": false,
+        "*.png": false,
+        "*.dat": false
     },
     "explorerExclude.backup": null,
     "python.linting.pylintEnabled": true,

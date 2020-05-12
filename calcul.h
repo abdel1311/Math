@@ -9,3 +9,5 @@ int point_milieu(double *x,double *Ana, double N);
 int acceleration_RK2(double *X,double *P,double* Y,double h,int N);
 int acceleration_EULER(double *X,double* P2, double* Y, double h, int N);
 int acceleration_ANA(double *X,double* P3, double* Y, double h, int N);
+int dAnalytique(double* DAna,double* X,double N);
+int iAnalytique(double* IAna,double* X,double N);

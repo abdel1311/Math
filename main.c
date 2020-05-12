@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "diskfct.h"
 #include "calcul.h"
 
 int main(int argc, char *argv[])
 {
-
+    //
     double xmin = 0;  //valeur minimal
     double xmax = 25; //valeur maximl
 
@@ -14,8 +15,7 @@ int main(int argc, char *argv[])
     double h = (xmax - xmin) / N;               //Pas
     choix_condition((double)30,(double)0);      //Choix de alpha et V0
 
-
-    //interpolation méthode d'Euler et RK2
+    //interpolation méthode d'Euler
     double *X = NULL;
     double *Y = NULL;
     Y = malloc((N + 1) * sizeof(double));
@@ -24,19 +24,95 @@ int main(int argc, char *argv[])
     {
         X[i] = (double)i * h;
     }
-
     Euler(Y, h, N);
     Write(X, Y, "vel_euler.dat", N);
+    //Euler N=100
+    N = 100;                                 //Nombre de points
+    h = (xmax - xmin) / N;               //Pas
+    Y = malloc((N + 1) * sizeof(double));
+    X = malloc((N + 1) * sizeof(double));
+    for (int i = 1; i < N + 1; i++)
+    {
+        X[i] = (double)i * h;
+    }
+    Euler(Y, h, N);
+    Write(X, Y, "vel_euler_100.dat", N);
+    //Euler N=200
+    N = 200;                                 //Nombre de points
+    h = (xmax - xmin) / N;               //Pas
+    Y = malloc((N + 1) * sizeof(double));
+    X = malloc((N + 1) * sizeof(double));
+    for (int i = 1; i < N + 1; i++)
+    {
+        X[i] = (double)i * h;
+    }
+    Euler(Y, h, N);
+    Write(X, Y, "vel_euler_200.dat", N);
+    //Euler N=400
+    N = 400;                                 //Nombre de points
+    h = (xmax - xmin) / N;               //Pas
+    Y = malloc((N + 1) * sizeof(double));
+    X = malloc((N + 1) * sizeof(double));
+    for (int i = 1; i < N + 1; i++)
+    {
+        X[i] = (double)i * h;
+    }
+    Euler(Y, h, N);
+    Write(X, Y, "vel_euler_400.dat", N);
 
+
+    //interpolation méthode RK2
+    N = 50;                             //Nombre de points
+    h = (xmax - xmin) / N;               //Pas
+    Y = malloc((N + 1) * sizeof(double));
+    X = malloc((N + 1) * sizeof(double));
+    for (int i = 1; i < N + 1; i++)
+    {
+        X[i] = (double)i * h;
+    }
     RK2(Y, h, N);
     Write(X, Y, "vel_RK2.dat", N);
+    //RK2 N = 100
+    N = 100;                             //Nombre de points
+    h = (xmax - xmin) / N;               //Pas
+    Y = malloc((N + 1) * sizeof(double));
+    X = malloc((N + 1) * sizeof(double));
+    for (int i = 1; i < N + 1; i++)
+    {
+        X[i] = (double)i * h;
+    }
+    RK2(Y, h, N);
+    Write(X, Y, "vel_RK2_100.dat", N);
+    //RK2 N = 200
+    N = 200;                             //Nombre de points
+    h = (xmax - xmin) / N;               //Pas
+    Y = malloc((N + 1) * sizeof(double));
+    X = malloc((N + 1) * sizeof(double));
+    for (int i = 1; i < N + 1; i++)
+    {
+        X[i] = (double)i * h;
+    }
+    RK2(Y, h, N);
+    Write(X, Y, "vel_RK2_200.dat", N);
+    //RK2 N = 400
+    N = 400;                             //Nombre de points
+    h = (xmax - xmin) / N;               //Pas
+    Y = malloc((N + 1) * sizeof(double));
+    X = malloc((N + 1) * sizeof(double));
+    for (int i = 1; i < N + 1; i++)
+    {
+        X[i] = (double)i * h;
+    }
+    RK2(Y, h, N);
+    Write(X, Y, "vel_RK2_400.dat", N);
+
+
 
     //Calcul Analytique
     double *Ana = NULL;
     Ana = malloc((N + 1) * sizeof(double));
     Analytique(Ana, h, N);
     Write(X, Ana, "Ana.dat", N);
-
 
 
     double N_list[4] = {50, 100, 200, 400};
@@ -69,22 +145,37 @@ int main(int argc, char *argv[])
     Write(alpha_list, E, "Erreur_alpha.dat", 4);
     
     //choix VO
+     choix_condition((double)10,(double)10);
+    Euler(Y, h, N);
+    Write(X, Y, "Euler_V0_10.dat", N);
 
-    double V0_list[4] = {0, 10};
-    int taille_V0_list = 2;
-    E = malloc(taille_V0_list * sizeof(double));
-    for (int i = 0; i < taille_V0_list; i++)
-    {
-        choix_condition((double)20,V0_list[i]);
-        Euler(Y, h, N);
-        Erreur(E,Y,N,h,i);
-    }
+    choix_condition((double)10,(double)0);
+    Euler(Y, h, N);
+    Write(X, Y, "Euler_V0_0.dat", N);
 
-    Write(V0_list, E, "Erreur_V0.dat", 2);
-    Write(Ana, E, "Ana_V0.dat", 2);
+
+
+
+    N = (double) 400;
+    double *IAna = NULL;
+    IAna = malloc((N + 1) * sizeof(double));
+    iAnalytique( IAna, X,N);
+    Write(X, IAna,"Ana_x.dat", N);
+
+
+    //Intégration point milieu 
+    N = (double) 800;
+    h = (xmax - xmin) / N; 
+    Ana = malloc((N + 1) * sizeof(double));
+    Analytique(Ana, h, N);
+
+    double *x_p = NULL;
+    x_p = malloc((N + 1) * sizeof(double));
+
+    point_milieu(x_p,Ana,N);
 
     //Intégration Trapéze
-    N = (double) 50;
+    N = (double) 400;
     h = (xmax - xmin) / N; 
 
     X = malloc((N + 1) * sizeof(double));
@@ -102,21 +193,14 @@ int main(int argc, char *argv[])
 
     trapeze(x_t,Ana, h, N);
 
-    //Intégration point milieu 
-    N = (double) 100;
-    h = (xmax - xmin) / N; 
-    Ana = malloc((N + 1) * sizeof(double));
-    Analytique(Ana, h, N);
 
-    double *x_p = NULL;
-    x_p = malloc((N + 1) * sizeof(double));
 
-    point_milieu(x_p,Ana,N);
+    Write_3(X, x_t,x_p,"Pos.dat", N);
 
-    Write_3(X, x_t,x_p,"Pos.dat", 50);
+
 
     //acceleration vroom vroom
-    N = (double) 50;
+    N = (double) 400;
 
     double *P = NULL;
     P = malloc((N-1) * sizeof(double));
@@ -133,6 +217,12 @@ int main(int argc, char *argv[])
     acceleration_ANA(X, P3, Y, h, N);
     Write(X, P3, "Accel_ANA.dat", N); 
 
+    N = (double) 400;
+    double *DAna = NULL;
+    DAna = malloc((N + 1) * sizeof(double));
+    dAnalytique(DAna, X,N);
+
+    Write(X, DAna,"Ana_a.dat", N);
 
     free(Y);
     free(X);
@@ -141,5 +231,8 @@ int main(int argc, char *argv[])
     free(x_p);
     free(x_t);
     free(P);
+    free(IAna);
+    free(DAna);
+
     return 0;
 }

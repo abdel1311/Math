@@ -1,7 +1,7 @@
 
 # Options de compilation
-CFLAGS = 
-#CFLAGS = -g
+# CFLAGS = 
+CFLAGS = -g -Wall
 
 # nom des librairies a lier
 LNAME = -lm
@@ -18,6 +18,7 @@ OBJ= $(SRC:.c=.o)
 # action declenchee par defaut
 all: $(EXEC)
     
+CC=gcc
 
 # compilation des fichiers sources en fichiers objets
 %.o: %.c
